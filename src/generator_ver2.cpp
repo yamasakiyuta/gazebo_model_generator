@@ -3,6 +3,7 @@
 #include <sstream>
 #include <string>
 #include <sys/stat.h>
+#include <stdio.h>
 
 void sdf_generator(std::string output,std::string collada,std::string model_name)
 {
@@ -69,6 +70,16 @@ std::string get_filename(const std::string &path)
 	}
 }
 
+void move_meshfile(std::string &oldpath, std::string &meshfile, std::string modelname)
+{
+	std::string newpath = "./models/" + modelname + "/meshes/" + meshfile;
+		printf("%s => %s\n", oldpath.c_str(), newpath.c_str());
+	if(rename(oldpath.c_str(), newpath.c_str()) == 0){
+		printf("ファイル移動成功\n");
+	}
+	else printf("ファイル移動失敗\n");
+}
+
 int main(int argc, char* argv[])
 {
     if(argc != 3){
@@ -76,13 +87,15 @@ int main(int argc, char* argv[])
 	    return 0;
     }
     
+	std::string fullpath = argv[1];
     std::string filename = get_filename(argv[1]); //gazeboのモデルに使用するメッシュ(.dae)
     std::string model_name = argv[2]; //gazeboモデルの名前
     std::string output = "models/" + model_name + "/model.sdf";
     printf("output file : %s\n",output.c_str());
     
     make_model_dir(model_name);//フォルダ作成
-    sdf_generator(output,filename,model_name);//ファイル作成
+    sdf_generator(output, filename, model_name);//ファイル作成
+	move_meshfile(fullpath, filename, model_name);//ファイル移動
 
     return 0;
 }
