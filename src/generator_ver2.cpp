@@ -5,14 +5,15 @@
 #include <sys/stat.h>
 #include <stdio.h>
 
-void sdf_generator(std::string output,std::string collada,std::string model_name)
+void sdf_generator(std::string collada, std::string model_name)
 {
     // ファイル出力ストリームの初期化
-    std::ofstream ofs(output.c_str());
+	std::string output_sdf = "models/" + model_name + "/model.sdf";
+    std::ofstream ofs(output_sdf.c_str());
 
     // ファイルに1行ずつ書き込み
     ofs << "<?xml version='1.0'?>" << std::endl;
-    ofs << "    <sdf version='1.4'>" << std::endl;
+    ofs << "<sdf version='1.4'>" << std::endl;
     ofs << "    <model name='"+ model_name +"'>" << std::endl;
     ofs << "    <static>true</static>" << std::endl;
     ofs << "		<link name='link'>" << std::endl;
@@ -39,10 +40,11 @@ void sdf_generator(std::string output,std::string collada,std::string model_name
     ofs << "</sdf>" << std::endl;
 }
 
-void cfg_generator(std::string output,std::string collada,std::string model_name)
+void cfg_generator(std::string collada, std::string model_name)
 {
     // ファイル出力ストリームの初期化
-    std::ofstream ofs(output.c_str());
+	std::string output_config = "models/" + model_name + "/model.cfg";
+    std::ofstream ofs(output_config.c_str());
 
     // ファイルに1行ずつ書き込み
     ofs << "<?xml version='1.0'?>" << std::endl;
@@ -60,17 +62,43 @@ void cfg_generator(std::string output,std::string collada,std::string model_name
     ofs << "<model>" << std::endl;
 }
 
+void world_generator(std::string model_name)
+{
+    // ファイル出力ストリームの初期化
+	std::string output_world = "models/" + model_name + "/worlds/" + model_name + ".world";
+    std::ofstream ofs(output_world.c_str());
+
+    // ファイルに1行ずつ書き込み
+    ofs << "<?xml version='1.0'?>" << std::endl;
+    ofs << "<sdf version='1.4'>" << std::endl;
+    ofs << "    <world name='default'>" << std::endl;
+    ofs << "        <include>" << std::endl;
+    ofs << "            <uri>model://sun</uri>" << std::endl;
+    ofs << "        </include>" << std::endl;
+    ofs << "        <include>" << std::endl;
+    ofs << "            <uri>model://" + model_name + "</uri>" << std::endl;
+    ofs << "            <pose>0 0 0 0 0 0</pose>" << std::endl;
+    ofs << "        </include>" << std::endl;
+    ofs << "    </world>" << std::endl;
+    ofs << "</sdf>" << std::endl;
+}
+
 void make_model_dir(std::string model_name)
 {
     std::string dr = "models/" + model_name;
     std::string mesh_dr = "models/" + model_name + "/meshes";
-    if(!mkdir("models",0755)){
+    std::string world_dr = "models/" + model_name + "/worlds";
+    
+	if(!mkdir("models",0755)){
 	  printf("generating models\n");
     }
     if(!mkdir(dr.c_str(),0755)){
 	  printf("generating %s\n",dr.c_str());
     }
     if(!mkdir(mesh_dr.c_str(),0755)){
+	  printf("generating %s\n",mesh_dr.c_str());
+    }
+    if(!mkdir(world_dr.c_str(),0755)){
 	  printf("generating %s\n",mesh_dr.c_str());
     }
 }
@@ -111,13 +139,13 @@ int main(int argc, char* argv[])
 	std::string fullpath = argv[1];
     std::string filename = get_filename(argv[1]); //gazeboのモデルに使用するメッシュ(.dae)
     std::string model_name = argv[2]; //gazeboモデルの名前
-    std::string output_sdf = "models/" + model_name + "/model.sdf";
-    std::string output_cfg = "models/" + model_name + "/model.cfg";
+    std::string output = "models/" + model_name + "/model";
     //printf("output file : %s\n",output.c_str());
     
-    make_model_dir(model_name);//フォルダ作成
-    sdf_generator(output_sdf, filename, model_name);//ファイル作成
-    cfg_generator(output_cfg, filename, model_name);//ファイル作成
+    make_model_dir(model_name);//modelフォルダ作成
+    sdf_generator(filename, model_name);//sdfファイル作成
+    cfg_generator(filename, model_name);//cfgファイル作成
+    world_generator(model_name);//cfgファイル作成
 	move_meshfile(fullpath, filename, model_name);//ファイル移動
 
     return 0;
