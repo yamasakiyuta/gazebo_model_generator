@@ -45,7 +45,7 @@ void sdf_generator(string collada, string model_name)
 void cfg_generator(string collada, string model_name)
 {
     // ファイル出力ストリームの初期化
-	string output_config = "models/" + model_name + "/model.cfg";
+	string output_config = "models/" + model_name + "/model.config";
     std::ofstream ofs(output_config.c_str());
 
     // ファイルに1行ずつ書き込み
@@ -61,7 +61,7 @@ void cfg_generator(string collada, string model_name)
     ofs << "  <description>" << std::endl;
     ofs << "    My awsome model." << std::endl;
     ofs << "  </description>" << std::endl;
-    ofs << "<model>" << std::endl;
+    ofs << "</model>" << std::endl;
 }
 
 void world_generator(string model_name)
