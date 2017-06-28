@@ -8,7 +8,5 @@ project(model_generator)
 #link_directories(${PCL_LIBRARY_DIRS})
 #add_definitions(${PCL_DEFINITIONS})
 
-add_executable (model_generator src/generator.cpp)
-add_executable (model_generator_ver2 src/generator_ver2.cpp)
-#target_link_libraries (greedy_projection ${PCL_LIBRARIES})
+add_executable (gazebo_model_generator src/gazebo_model_generator.cpp)
 
