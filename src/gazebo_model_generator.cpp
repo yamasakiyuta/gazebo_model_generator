@@ -29,13 +29,13 @@ void sdf_generator(string collada, string model_name)
     ofs << "					<geometry>" << std::endl;
     ofs << "						<mesh><uri>model://"+model_name+"/meshes/"+collada+"</uri></mesh>" << std::endl;
     ofs << "					</geometry>" << std::endl;
-    ofs << "					<material>" << std::endl;
+    ofs << "					<!--material>" << std::endl;
     ofs << "                 	<script>" << std::endl;
     ofs << "                 		<uri>model://asphalt_plane/materials/scripts</uri>" << std::endl;
     ofs << "                 		<uri>model://asphalt_plane/materials/textures</uri>" << std::endl;
     ofs << "                 		<name>vrc/asphalt</name>" << std::endl;
     ofs << "                	</script>" << std::endl;
-    ofs << "                	</material>" << std::endl;
+    ofs << "                	</material-->" << std::endl;
     ofs << "				</visual>" << std::endl;
     ofs << "		</link>" << std::endl;
     ofs << "	</model>" << std::endl;
